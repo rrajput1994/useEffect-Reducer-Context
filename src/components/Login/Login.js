@@ -1,10 +1,9 @@
-import React, { useReducer } from "react";
+import React, { useEffect, useReducer, useState } from "react";
 
 import Card from "../UI/Card/Card";
 import classes from "./Login.module.css";
 import Button from "../UI/Button/Button";
 
-// it is email Reducer function outsite of the component?
 const emailReducer = (prevEmailState, action) => {
   if (action.type === "USER_INPUT") {
     return { value: action.valEmail, isValid: action.valEmail.includes("@") };
@@ -18,7 +17,6 @@ const emailReducer = (prevEmailState, action) => {
   return { value: "", isValid: false };
 };
 
-// it is password Reducer function outside of the Component
 const passwordReducer = (prevPassState, action) => {
   if (action.type === "USER_PASS") {
     return {
@@ -36,6 +34,8 @@ const passwordReducer = (prevPassState, action) => {
 };
 
 const Login = (props) => {
+  const [formIsValid, setFormIsValid] = useState(false);
+
   const [emailState, dispatchEmailAction] = useReducer(emailReducer, {
     value: "",
     isValid: null,
@@ -46,16 +46,33 @@ const Login = (props) => {
     isValid: null,
   });
 
+  const { isValid: isEmailValid } = emailState;
+  const { isValid: isPassValid } = passwordState;
+
+  useEffect(() => {
+    // console.log("useEffect called");
+    const timeout = setTimeout(() => {
+      // console.log("useEffect called");
+      setFormIsValid(isEmailValid && isPassValid);
+    }, 500);
+
+    // Cleanup function useEffect hook
+    return () => {
+      clearTimeout(timeout);
+      // console.log("clenup function called");
+    };
+  }, [isEmailValid, isPassValid]);
+
   const emailChangeHandler = (event) => {
     dispatchEmailAction({ type: "USER_INPUT", valEmail: event.target.value });
   };
 
-  const validateEmailHandler = () => {
-    dispatchEmailAction({ type: "INPUT_BLUR" });
-  };
-
   const passwordChangeHandler = (event) => {
     dispatchPassAction({ type: "USER_PASS", valPass: event.target.value });
+  };
+
+  const validateEmailHandler = () => {
+    dispatchEmailAction({ type: "INPUT_BLUR" });
   };
 
   const validatePasswordHandler = () => {
@@ -99,11 +116,7 @@ const Login = (props) => {
           />
         </div>
         <div className={classes.actions}>
-          <Button
-            type="submit"
-            className={classes.btn}
-            disabled={!emailState.isValid}
-          >
+          <Button type="submit" className={classes.btn} disabled={!formIsValid}>
             Login
           </Button>
         </div>
