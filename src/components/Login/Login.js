@@ -1,5 +1,4 @@
 import React, { useEffect, useReducer, useState } from "react";
-
 import Card from "../UI/Card/Card";
 import classes from "./Login.module.css";
 import Button from "../UI/Button/Button";
@@ -81,6 +80,11 @@ const Login = (props) => {
 
   const submitHandler = (event) => {
     event.preventDefault();
+
+    //I am not forwarding onLogout function somewhere in anothere child
+    //component from her e that is why, I m not using context-api here. working
+    //with props.
+
     props.onLogin(emailState.value, passwordState.value);
   };
 
