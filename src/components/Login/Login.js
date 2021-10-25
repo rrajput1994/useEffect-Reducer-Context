@@ -1,7 +1,8 @@
-import React, { useEffect, useReducer, useState } from "react";
+import React, { useEffect, useReducer, useState, useContext } from "react";
 import Card from "../UI/Card/Card";
 import classes from "./Login.module.css";
 import Button from "../UI/Button/Button";
+import AuthContext from "../../store/auth-context";
 
 const emailReducer = (prevEmailState, action) => {
   if (action.type === "USER_INPUT") {
@@ -33,6 +34,8 @@ const passwordReducer = (prevPassState, action) => {
 };
 
 const Login = (props) => {
+  const ctx = useContext(AuthContext);
+
   const [formIsValid, setFormIsValid] = useState(false);
 
   const [emailState, dispatchEmailAction] = useReducer(emailReducer, {
@@ -85,7 +88,7 @@ const Login = (props) => {
     //component from her e that is why, I m not using context-api here. working
     //with props.
 
-    props.onLogin(emailState.value, passwordState.value);
+    ctx.onLogin(emailState.value, passwordState.value);
   };
 
   return (
